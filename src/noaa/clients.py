@@ -3,6 +3,7 @@ from typing import Any
 import httpx
 
 from .builder import Builder, SortField, SortOrder
+from .exceptions import NoaaApiError
 from .models import (
     Collection,
     Data,
@@ -46,7 +47,11 @@ class Client:
         return self._client.close()
 
     def _send_request(self, request: httpx.Request) -> httpx.Response:
-        return self._client.send(request)
+        resp = self._client.send(request)
+        if resp.is_error:
+            raise NoaaApiError(status_code=resp.status_code, message=str(resp.content))
+
+        return resp
 
     def get_datasets(
         self,
@@ -243,12 +248,12 @@ class Client:
     def get_data(
         self,
         dataset_id: str,
+        start_date: str,
+        end_date: str,
         *,
         data_type_id: str | None = None,
         location_id: str | None = None,
         station_id: str | None = None,
-        start_date: str | None = None,
-        end_date: str | None = None,
         units: str | None = None,
         sort_field: SortField | None = None,
         sort_order: SortOrder | None = None,
@@ -297,14 +302,18 @@ class AsyncClient:
     async def __aenter__(self):
         return self
 
-    async def __exit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.aclose()
 
     async def aclose(self):
         return await self._client.aclose()
 
     async def _send_request(self, request: httpx.Request) -> httpx.Response:
-        return await self._client.send(request)
+        resp = await self._client.send(request)
+        if resp.is_error:
+            raise NoaaApiError(status_code=resp.status_code, message=str(resp.content))
+
+        return resp
 
     async def get_datasets(
         self,
@@ -501,12 +510,12 @@ class AsyncClient:
     async def get_data(
         self,
         dataset_id: str,
+        start_date: str,
+        end_date: str,
         *,
         data_type_id: str | None = None,
         location_id: str | None = None,
         station_id: str | None = None,
-        start_date: str | None = None,
-        end_date: str | None = None,
         units: str | None = None,
         sort_field: SortField | None = None,
         sort_order: SortOrder | None = None,
