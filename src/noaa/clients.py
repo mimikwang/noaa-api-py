@@ -3,7 +3,7 @@ from typing import Any
 import httpx
 
 from .builder import Builder, SortField, SortOrder
-from .exceptions import NoaaApiError
+from .exceptions import NoaaApiError, NoaaNotFoundError
 from .models import (
     Collection,
     Data,
@@ -50,6 +50,9 @@ class Client:
         resp = self._client.send(request)
         if resp.is_error:
             raise NoaaApiError(status_code=resp.status_code, message=str(resp.content))
+
+        if not resp.json():
+            raise NoaaNotFoundError()
 
         return resp
 
@@ -312,6 +315,9 @@ class AsyncClient:
         resp = await self._client.send(request)
         if resp.is_error:
             raise NoaaApiError(status_code=resp.status_code, message=str(resp.content))
+
+        if not resp.json():
+            raise NoaaNotFoundError()
 
         return resp
 

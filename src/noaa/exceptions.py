@@ -8,3 +8,7 @@ class NoaaApiError(NoaaError):
         self.message = message
 
         super().__init__(f"message: {message}, status_code: {status_code}")
+
+
+class NoaaNotFoundError(NoaaError):
+    pass
