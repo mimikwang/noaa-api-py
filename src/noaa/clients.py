@@ -26,7 +26,9 @@ class Client:
         base_url: str = DEFAULT_BASE_URL,
         client_options: dict[str, Any] | None = None,
     ):
-        """Client to interact with the NOAA api
+        """Client to interact with the NCDC NOAA api
+
+        The API is documented here: https://www.ncdc.noaa.gov/cdo-web/webservices/v2.
 
         Args:
             token (str): api token required for access. Follow instructions at https://www.ncdc.noaa.gov/cdo-web/token
@@ -291,7 +293,9 @@ class AsyncClient:
         base_url: str = DEFAULT_BASE_URL,
         client_options: dict[str, Any] | None = None,
     ):
-        """Client to interact with the NOAA api
+        """Async Client to interact with the NOAA api
+
+        The API is documented here: https://www.ncdc.noaa.gov/cdo-web/webservices/v2.
 
         Args:
             token (str): api token required for access. Follow instructions at https://www.ncdc.noaa.gov/cdo-web/token

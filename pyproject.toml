@@ -1,6 +1,6 @@
 [project]
 name = "noaa-api-py"
-version = "0.1.0"
+version = "0.1.1"
 description = "Python client to interact with the NOAA api"
 readme = "README.md"
 license = "Apache-2.0"
@@ -21,9 +21,9 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/mimikwang/noaa-py"
-Repository = "https://github.com/mimikwang/noaa-py"
-Issues = "https://github.com/mimikwang/noaa-py/issues"
+Homepage = "https://github.com/mimikwang/noaa-api-py"
+Repository = "https://github.com/mimikwang/noaa-api-py"
+Issues = "https://github.com/mimikwang/noaa-api-py/issues"
 
 [build-system]
 requires = ["uv_build>=0.11.23,<0.12.0"]
@@ -32,8 +32,13 @@ build-backend = "uv_build"
 [tool.uv.build-backend]
 module-name = "noaa"
 
+[tool.uv.workspace]
+members = [
+    "scratch/scratch",
+]
+
 [dependency-groups]
 dev = [
     "ruff>=0.16.8",
-    "ty>=0.0.81",
+    "ty>=0.0.82",
 ]
