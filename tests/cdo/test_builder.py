@@ -1,6 +1,6 @@
 import pytest
 
-from noaa.builder import Builder
+from noaa.cdo.builder import Builder
 
 
 class TestBuilder:

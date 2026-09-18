@@ -20,7 +20,7 @@ First, request a access token at NOAA [here](https://www.ncdc.noaa.gov/cdo-web/t
 Then, use the following to use the sync client.
 
 ```python
-from noaa import Client
+from noaa.cdo import Client
 
 TOKEN = "<your-token-here>"
 
@@ -70,7 +70,7 @@ Similarly, to use the async client:
 ```python
 import asyncio
 
-from noaa import AsyncClient
+from noaa.cdo import AsyncClient
 
 TOKEN = "<your-token-here>"
 
