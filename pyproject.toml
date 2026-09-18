@@ -32,11 +32,6 @@ build-backend = "uv_build"
 [tool.uv.build-backend]
 module-name = "noaa"
 
-[tool.uv.workspace]
-members = [
-    "scratch/scratch",
-]
-
 [dependency-groups]
 dev = [
     "pytest>=9.1.1",
