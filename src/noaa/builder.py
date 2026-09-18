@@ -5,6 +5,7 @@ import httpx
 
 type SortField = Literal["id", "name", "mindate", "maxdate", "datacoverage"]
 type SortOrder = Literal["asc", "desc"]
+type SingleOrMultiple = str | list[str]
 
 
 class Builder:
@@ -30,9 +31,9 @@ class Builder:
     def datasets(
         self,
         *,
-        data_type_id: str | None = None,
-        location_id: str | None = None,
-        station_id: str | None = None,
+        data_type_id: SingleOrMultiple | None = None,
+        location_id: SingleOrMultiple | None = None,
+        station_id: SingleOrMultiple | None = None,
         start_date: str | None = None,
         end_date: str | None = None,
         sort_field: SortField | None = None,
@@ -61,9 +62,9 @@ class Builder:
     def data_categories(
         self,
         *,
-        dataset_id: str | None = None,
-        location_id: str | None = None,
-        station_id: str | None = None,
+        dataset_id: SingleOrMultiple | None = None,
+        location_id: SingleOrMultiple | None = None,
+        station_id: SingleOrMultiple | None = None,
         start_date: str | None = None,
         end_date: str | None = None,
         sort_field: SortField | None = None,
@@ -92,10 +93,10 @@ class Builder:
     def data_types(
         self,
         *,
-        dataset_id: str | None = None,
-        location_id: str | None = None,
-        station_id: str | None = None,
-        data_category_id: str | None = None,
+        dataset_id: SingleOrMultiple | None = None,
+        location_id: SingleOrMultiple | None = None,
+        station_id: SingleOrMultiple | None = None,
+        data_category_id: SingleOrMultiple | None = None,
         start_date: str | None = None,
         end_date: str | None = None,
         sort_field: SortField | None = None,
@@ -125,7 +126,7 @@ class Builder:
     def location_categories(
         self,
         *,
-        dataset_id: str | None = None,
+        dataset_id: SingleOrMultiple | None = None,
         start_date: str | None = None,
         end_date: str | None = None,
         sort_field: SortField | None = None,
@@ -152,9 +153,9 @@ class Builder:
     def locations(
         self,
         *,
-        dataset_id: str | None = None,
-        location_category_id: str | None = None,
-        data_category_id: str | None = None,
+        dataset_id: SingleOrMultiple | None = None,
+        location_category_id: SingleOrMultiple | None = None,
+        data_category_id: SingleOrMultiple | None = None,
         start_date: str | None = None,
         end_date: str | None = None,
         sort_field: SortField | None = None,
@@ -183,10 +184,10 @@ class Builder:
     def stations(
         self,
         *,
-        dataset_id: str | None = None,
-        location_id: str | None = None,
-        data_category_id: str | None = None,
-        data_type_id: str | None = None,
+        dataset_id: SingleOrMultiple | None = None,
+        location_id: SingleOrMultiple | None = None,
+        data_category_id: SingleOrMultiple | None = None,
+        data_type_id: SingleOrMultiple | None = None,
         extent: str | None = None,
         start_date: str | None = None,
         end_date: str | None = None,
@@ -215,12 +216,12 @@ class Builder:
     def data(
         self,
         dataset_id: str,
+        start_date: str,
+        end_date: str,
         *,
-        data_type_id: str | None = None,
-        location_id: str | None = None,
-        station_id: str | None = None,
-        start_date: str | None = None,
-        end_date: str | None = None,
+        data_type_id: SingleOrMultiple | None = None,
+        location_id: SingleOrMultiple | None = None,
+        station_id: SingleOrMultiple | None = None,
         units: str | None = None,
         sort_field: SortField | None = None,
         sort_order: SortOrder | None = None,
@@ -259,13 +260,13 @@ class Builder:
     @staticmethod
     def build_params(
         *,
-        data_category_id: str | None = None,
-        dataset_id: str | None = None,
-        data_type_id: str | None = None,
+        data_category_id: SingleOrMultiple | None = None,
+        dataset_id: SingleOrMultiple | None = None,
+        data_type_id: SingleOrMultiple | None = None,
         extent: str | None = None,
-        location_id: str | None = None,
-        location_category_id: str | None = None,
-        station_id: str | None = None,
+        location_id: SingleOrMultiple | None = None,
+        location_category_id: SingleOrMultiple | None = None,
+        station_id: SingleOrMultiple | None = None,
         start_date: str | None = None,
         end_date: str | None = None,
         sort_field: SortField | None = None,
@@ -277,25 +278,29 @@ class Builder:
     ) -> dict[str, Any]:
         params = {}
         if data_category_id:
-            params["datacategoryid"] = data_category_id
+            params["datacategoryid"] = Builder.format_single_or_multiple(
+                data_category_id
+            )
 
         if dataset_id:
-            params["datasetid"] = dataset_id
+            params["datasetid"] = Builder.format_single_or_multiple(dataset_id)
 
         if data_type_id:
-            params["datatypeid"] = data_type_id
+            params["datatypeid"] = Builder.format_single_or_multiple(data_type_id)
 
         if extent:
             params["extent"] = extent
 
         if location_id:
-            params["locationid"] = location_id
+            params["locationid"] = Builder.format_single_or_multiple(location_id)
 
         if location_category_id:
-            params["locationcategoryid"] = location_category_id
+            params["locationcategoryid"] = Builder.format_single_or_multiple(
+                location_category_id
+            )
 
         if station_id:
-            params["stationid"] = station_id
+            params["stationid"] = Builder.format_single_or_multiple(station_id)
 
         if start_date:
             params["startdate"] = start_date
@@ -322,3 +327,10 @@ class Builder:
             params["includemetadata"] = include_metadata
 
         return params
+
+    @staticmethod
+    def format_single_or_multiple(input: SingleOrMultiple) -> str:
+        if isinstance(input, str):
+            return input.strip()
+
+        return ",".join([i.strip() for i in input])
