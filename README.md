@@ -81,6 +81,7 @@ async def main():
 
     print(data.model_dump_json(indent=2))
 
+
 asyncio.run(main())
 ```
 
