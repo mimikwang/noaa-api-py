@@ -48,7 +48,7 @@ class Client:
         units: Units = "metric",
         time_zone: TimeZone = "gmt",
         datum: Datum = "MLLW",
-    ) -> WaterLevel:
+    ) -> Response[WaterLevel]:
         resp = self._send_request(
             self._builder.water_level(
                 station=station,
