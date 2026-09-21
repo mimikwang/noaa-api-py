@@ -98,7 +98,6 @@ class Client:
                 time_zone=time_zone,
             )
         )
-        print(resp.content)
         return Response[WaterTemperature].model_validate(resp.json())
 
 
