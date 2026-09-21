@@ -23,14 +23,6 @@ class WaterLevel(Base):
     )
 
 
-class PrimaryWaterLevel(WaterLevel):
-    pass
-
-
-class VerifiedWaterLevel(WaterLevel):
-    pass
-
-
 class HourlyHeight(Base):
     time: str = Field(
         ..., alias="t", description="Time - Date and time of the observation"
@@ -156,9 +148,7 @@ class MonthlyMean(Base):
     dtl: str = Field(..., alias="DTL", description="Mean Diurnal Tide Level")
     gt: str = Field(..., alias="GT", description="Great Diurnal Range")
     mn: str = Field(..., alias="MN", description="Mean Range of Tide")
-    dhq: str = Field(
-        ..., alias="DHQ", description="Mean Diurnal High Water Inequality"
-    )
+    dhq: str = Field(..., alias="DHQ", description="Mean Diurnal High Water Inequality")
     dlq: str = Field(..., alias="DLQ", description="Mean Diurnal Low Water Inequality")
     hwi: str = Field(
         ..., alias="HWI", description="Greenwich High Water Interval (in Hours)"
@@ -256,9 +246,7 @@ class WaterTemperature(Base):
     time: str = Field(
         ..., alias="t", description="Time - Date and time of the observation"
     )
-    value: str = Field(
-        ..., alias="v", description="Value - Measured water temperature"
-    )
+    value: str = Field(..., alias="v", description="Value - Measured water temperature")
     flags: str = Field(..., alias="f", description="Data Flags")
 
 
