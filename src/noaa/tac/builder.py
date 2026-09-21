@@ -29,6 +29,13 @@ class EndDateAndRange(BaseModel):
     range: int
 
 
+class DateParams(BaseModel):
+    begin_date: str | None
+    end_date: str | None
+    range: int | None
+    date: Date | None
+
+
 class Builder:
     METADATA_API_PATH = "/webapi"
     DATA_API_PATH = "/datagetter"
@@ -45,34 +52,37 @@ class Builder:
         time_zone: TimeZone,
         datum: Datum,
     ) -> httpx.Request:
-
-        begin_date = None
-        end_date = None
-        date_str = None
-        range = None
-
-        if isinstance(date, str):
-            date_str = date
-        elif isinstance(date, BeginAndEndDates):
-            begin_date = date.begin_date
-            end_date = date.end_date
-        elif isinstance(date, BeginDateAndRange):
-            begin_date = date.begin_date
-            range = date.range
-        elif isinstance(date, EndDateAndRange):
-            end_date = date.end_date
-            range = date.range
-        elif isinstance(date, int):
-            range = date
+        date_params = self._date_params(date)
 
         return self.data(
             station=station,
-            begin_date=begin_date,
-            end_date=end_date,
-            range=range,
-            date=date_str,
+            begin_date=date_params.begin_date,
+            end_date=date_params.end_date,
+            range=date_params.range,
+            date=date_params.date,
             product="water_level",
             datum=datum,
+            units=units,
+            time_zone=time_zone,
+        )
+
+    def water_temperature(
+        self,
+        *,
+        station: str,
+        date: Date | BeginAndEndDates | BeginDateAndRange | EndDateAndRange | int,
+        units: Units,
+        time_zone: TimeZone,
+    ) -> httpx.Request:
+        date_params = self._date_params(date)
+
+        return self.data(
+            station=station,
+            begin_date=date_params.begin_date,
+            end_date=date_params.end_date,
+            range=date_params.range,
+            date=date_params.date,
+            product="water_temperature",
             units=units,
             time_zone=time_zone,
         )
@@ -142,4 +152,31 @@ class Builder:
             method=HTTPMethod.GET,
             url=f"{self.base_url}{self.DATA_API_PATH}",
             params=params,
+        )
+
+    @staticmethod
+    def _date_params(
+        date: Date | BeginAndEndDates | BeginDateAndRange | EndDateAndRange | int,
+    ) -> DateParams:
+        begin_date = None
+        end_date = None
+        date_str = None
+        range = None
+
+        if isinstance(date, str):
+            date_str = date
+        elif isinstance(date, BeginAndEndDates):
+            begin_date = date.begin_date
+            end_date = date.end_date
+        elif isinstance(date, BeginDateAndRange):
+            begin_date = date.begin_date
+            range = date.range
+        elif isinstance(date, EndDateAndRange):
+            end_date = date.end_date
+            range = date.range
+        elif isinstance(date, int):
+            range = date
+
+        return DateParams(
+            begin_date=begin_date, end_date=end_date, range=range, date=date_str
         )
